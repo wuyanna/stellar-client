@@ -18,7 +18,8 @@ window.Options = {
     APP_ID: '1512347158994532',
     DOMAIN_NAME: 'stellar.local.dev',
     DEFAULT_FEDERATION_DOMAIN: 'stellar.org',
-    API_SERVER: 'http://localhost:3001',
+    // API_SERVER: 'http://localhost:3001',
+    API_SERVER: 'https://api.stellar.org',
     API_STATUS_PATH: '/status.json',
     WALLET_SERVER: 'http://localhost:3000',
 

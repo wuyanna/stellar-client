@@ -27,6 +27,7 @@ sc.controller('SendController', function($rootScope, $scope, $analytics, Stellar
   $scope.send.indirect = false;
   // Holds the state of our sending transaction
   $scope.send.result = null;
+  $scope.send.friends = ["megha", "rahul"];
 
   $scope.setState = function (state) {
     if (!$rootScope.connected) {
@@ -164,6 +165,18 @@ sc.controller('SendController', function($rootScope, $scope, $analytics, Stellar
     $scope.$apply(function () {
       $scope.setEngineStatus(res, true);
     });
+
+    // Omlet exit
+    var rdl = Omlet.createRDL({
+            noun: "send stellar",
+            displayTitle: "Stellar wallet",
+            displayThumbnailUrl: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ49Ppvn_MCPaIzkCZvNld3_b-IbRz4vTHZts-o1J4KU_NrKj3TzQ",
+            displayText: "I have sent you stellars",
+            json: null,
+            webCallback: null,
+            callback: window.location.href,
+        });
+        Omlet.exit(rdl);
   };
 
   $scope.onTransactionError = function (res) {

@@ -236,7 +236,8 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
     var params = {
       username: data.username,
       address: data.signingKeys.address,
-      recaptchaResponse: data.recaptchaResponse
+      recaptchaResponse: data.recaptchaResponse,
+      omletId: Omlet.scope.identity.account
     };
 
     // Submit the registration data to the server.

@@ -32,9 +32,9 @@
     <!-- endbuild -->
 
     <script type="text/javascript">
-        if(!isSupportedBrowser()) {
-          window.location = "/unsupported.html";
-        }
+        // if(!isSupportedBrowser()) {
+        //   window.location = "/unsupported.html";
+        // }
     </script>
 
     <script type="text/javascript">
@@ -48,6 +48,12 @@
 <body ng-controller="AppCtrl">
 <div class="app-wrapper">
     <div ng-include="'templates/navbar.html'"></div>
+
+    <div id="usernameLbl"></div>
+    <div>
+    <button onclick="shareStellar()">Share Stellar</button>
+    </div>
+    
 
     <div class="client-container" ui-view>
         <div class="page-header container">
@@ -79,6 +85,41 @@
         </footer>
     </div>
 </div>
+
+<!-- omlet -->
+    <script src="https://omlet.me/a/lib/handlebars.js"></script>
+    <script src="https://omlet.me/a/lib/base64.js"></script>
+    <script src="https://omlet.me/a/js/omlet.js"></script>
+
+    <script type="text/javascript">
+
+    function shareStellar() {
+        var rdl = Omlet.createRDL({
+            noun: "a web app",
+            displayTitle: "Steller",
+            displayThumbnailUrl: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ49Ppvn_MCPaIzkCZvNld3_b-IbRz4vTHZts-o1J4KU_NrKj3TzQ",
+            displayText: "Welcome to Stellar",
+            json: null,
+            webCallback: null,
+            callback: window.location.href,
+        });
+        Omlet.exit(rdl);
+    }
+
+    Omlet.ready(function() {
+        displaytxt = "Welcome to Stellar Wallet " + Omlet.scope.identity.name + "! <br />Your friends: ";
+        for (var x in  Omlet.scope.feed_members) {
+            if (Omlet.scope.identity.account === Omlet.scope.feed_members[x].account) {
+                continue;
+            }
+            displaytxt += Omlet.scope.feed_members[x].displayname;
+            displaytxt += ",";
+        }
+        document.getElementById("usernameLbl").innerHTML = displaytxt;
+    });
+
+    </script>
+    <!-- end omlet -->
 
 <!-- build:js scripts/stellar.js -->
 <script src="bower_components/stellar-lib/build/stellar-lib.js"></script>

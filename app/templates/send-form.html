@@ -3,8 +3,19 @@
         <div class="form-group send-address">
             <label for="recipient" class="col-md-2">SEND TO</label>
             <div class="col-md-6 input-icon-wrapper">
-                <input id="recipient" name="recipient" type="text" class="form-control" spellcheck="false" ng-model="sendFormModel.recipient"/>
-                <i class="glyphicon glyphicon-globe"></i>
+                <div class="input-group">
+                    <input id="recipient" name="recipient" type="text" class="form-control" spellcheck="false" ng-model="sendFormModel.recipient"/>
+                    <i class="glyphicon glyphicon-globe"></i>
+                    <div class="input-group-btn">
+                
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-click="setOverflowVisible()"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right" style="min-width: 450px" role="menu">
+                            <li ng-repeat="value in send.friends"><a href="" ng-click="changeRecipient(value)">{{value}}</a></li>
+                        </ul>
+                    
+                    </div>
+                </div>
+                
             </div>
             <div class="col-md-4 tip">Stellar name or address.</div>
         </div>
