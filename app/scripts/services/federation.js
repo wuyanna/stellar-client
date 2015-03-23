@@ -62,7 +62,9 @@ sc.factory('rpFederation', ['$q', '$rootScope', '$http', 'rpStellarTxt', functio
                     destination: user,
                     // DEPRECATED "destination" is a more neutral name for this field
                     //   than "user"
-                    user: user
+                    user: user,
+                    omletId: $scope.send.recipient.account
+                    // omletId: "10123456"
                 }
             };
             $http.get(txt.federation_url[0], config)

@@ -25,9 +25,10 @@ sc.factory('rpStellarTxt', ['$q', '$rootScope',
 
                 // TODO: change these back to https
                 var urls = [
-                        'https://www.'+domain+'/stellar.txt',
-                        'https://'+domain+'/stellar.txt',
-                        'https://stellar.'+domain+'/stellar.txt'
+                        // 'https://www.'+domain+'/stellar.txt',
+                        // 'https://'+domain+'/stellar.txt',
+                        // 'https://stellar.'+domain+'/stellar.txt'
+                        'http://localhost:8000' + '/stellar.txt'
                 ];
                 var next = function (xhr, status) {
                     if (!urls.length) {

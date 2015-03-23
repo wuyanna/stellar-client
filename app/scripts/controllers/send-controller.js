@@ -27,7 +27,7 @@ sc.controller('SendController', function($rootScope, $scope, $analytics, Stellar
   $scope.send.indirect = false;
   // Holds the state of our sending transaction
   $scope.send.result = null;
-  $scope.send.friends = ["megha", "rahul"];
+  $scope.send.friends = Omlet.scope.feed_members;
 
   $scope.setState = function (state) {
     if (!$rootScope.connected) {

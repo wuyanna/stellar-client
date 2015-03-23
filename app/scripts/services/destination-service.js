@@ -180,8 +180,9 @@ sc.service('Destination', function($rootScope, $q, StellarNetwork, contacts) {
    */
   Destination.prototype.isValid = function() {
     var addressPresent = !!this.address;
+    if (!addressPresent) {console.log("destination invalid: address not present")};
     var destinationTagValid = !this.requireDestinationTag || this.destinationTag;
-
+    if (!destinationTagValid) {console.log("destination invalid: dest tag invalid")}
     return addressPresent && destinationTagValid;
   };
 

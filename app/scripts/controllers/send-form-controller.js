@@ -217,7 +217,8 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
   };
 
   $scope.changeRecipient = function(newRecipient) {
-    $('#recipient').val(newRecipient);
+    $('#recipient').val(newRecipient.displayname);
+    $scope.send.recipient = newRecipient;
   };
 
   //this is because the currency dropdown gets cut-off because the parent container

@@ -2,9 +2,9 @@
 window.Options = {
     server: {
         "trusted" : true,
-        "websocket_ip" : "localhost",
+        "websocket_ip" : "live.stellar.org",
         "websocket_port" : 9001,
-        "websocket_ssl" : false
+        "websocket_ssl" : true
     },
 
     mixpanel: {
@@ -18,10 +18,10 @@ window.Options = {
     APP_ID: '1512347158994532',
     DOMAIN_NAME: 'stellar.local.dev',
     DEFAULT_FEDERATION_DOMAIN: 'stellar.org',
-    // API_SERVER: 'http://localhost:3001',
-    API_SERVER: 'https://api.stellar.org',
+    API_SERVER: 'http://10.189.64.131:9000',
+    // API_SERVER: 'https://api.stellar.org',
     API_STATUS_PATH: '/status.json',
-    WALLET_SERVER: 'http://localhost:3000',
+    WALLET_SERVER: 'http://10.189.64.131:3000',
 
     // If set, login will persist across sessions (page reload). This is mostly
     // intended for developers, be careful about using this in a real setting.

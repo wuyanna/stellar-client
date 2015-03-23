@@ -18,7 +18,7 @@ var runSequence = require('run-sequence');
 
 // config initialization
 var cfg = {
-    noLintHook:  false,
+    noLintHook:  true,
     errorOnWarn: process.env.WERROR || false,
 };
 

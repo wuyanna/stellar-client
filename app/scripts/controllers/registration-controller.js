@@ -195,10 +195,11 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
 
     var validInput = true;
 
-    if (!$scope.data.recaptchaResponse) {
-      validInput = false;
-      $scope.errors.captchaErrors.push("Invalid captcha");
-    }
+    // TODO - omlet - recaptcha functionality
+    // if (!$scope.data.recaptchaResponse) {
+    //   validInput = false;
+    //   $scope.errors.captchaErrors.push("Invalid captcha");
+    // }
 
     if (!data.username) {
       validInput = false;
@@ -238,6 +239,7 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
       address: data.signingKeys.address,
       recaptchaResponse: data.recaptchaResponse,
       omletId: Omlet.scope.identity.account
+      // omletId: "10223456"
     };
 
     // Submit the registration data to the server.

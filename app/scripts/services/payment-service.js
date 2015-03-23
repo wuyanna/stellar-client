@@ -26,8 +26,9 @@ sc.service('Payment', function($rootScope, $q, StellarNetwork, Destination, Canc
    */
   Payment.isValid = function() {
     var validDestination = destination && destination.isValid();
+    if (!validDestination) {console.log("payment invalid: destination invalid")};
     var validAmount = amount && amount.is_valid() && amount.is_positive();
-
+    if (!validAmount) {console.log("payment invalid: amount invalid")};
     return validDestination && validAmount;
   };
 
@@ -144,9 +145,10 @@ sc.service('Payment', function($rootScope, $q, StellarNetwork, Destination, Canc
    */
   function updatePaths() {
     clearPaths();
-
+    console.log("update path subscribe ");
     // Determine if payment is ready to find paths.
     if(!Payment.isValid()) {
+      console.log("update path invalid ");
       $rootScope.$broadcast('payment:invalid');
       return;
     }
@@ -154,6 +156,7 @@ sc.service('Payment', function($rootScope, $q, StellarNetwork, Destination, Canc
     // Determine if the amount is enough to fund the destination.
     var finalDestBalance = amount.add(destination.balance);
     if (finalDestBalance.compareTo($rootScope.account.reserve_base) < 0) {
+      console.log("update path unfunded ");
       var minimumAmount = $rootScope.account.reserve_base.subtract(destination.balance);
 
       $rootScope.$broadcast('payment:destination-unfunded', minimumAmount);
@@ -171,9 +174,10 @@ sc.service('Payment', function($rootScope, $q, StellarNetwork, Destination, Canc
       destination.address,
       amount
     );
-
+    console.log("path subscribe: " + destination.address);
     // Broadcast path updates.
     pathSubscription.on('update', function(result) {
+      console.log("path subscribe succ");
       if(this.closed) { return; } // TODO: Move to stellar-lib
 
       var paths = processPaths(result.alternatives || []);
@@ -182,6 +186,7 @@ sc.service('Payment', function($rootScope, $q, StellarNetwork, Destination, Canc
 
     // Handle path errors.
     pathSubscription.on('error', function(result) {
+      console.log("path subscribe fail");
       if(this.closed) { return; } // TODO: Move to stellar-lib
 
       $rootScope.$broadcast('payment:paths-error');
@@ -210,6 +215,7 @@ sc.service('Payment', function($rootScope, $q, StellarNetwork, Destination, Canc
       // No paths because of account reserve.
       var finalReserve = $rootScope.account.max_spend.subtract(amount);
       if (finalReserve.is_negative()) {
+        console.log("Your max spend: " + $rootScope.account.max_spend.to_number());
         $rootScope.$broadcast('payment:insufficient-reserve', $rootScope.account.reserve);
         return;
       }

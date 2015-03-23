@@ -10,7 +10,7 @@
                 
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-click="setOverflowVisible()"><span class="caret"></span></button>
                         <ul class="dropdown-menu dropdown-menu-right" style="min-width: 450px" role="menu">
-                            <li ng-repeat="value in send.friends"><a href="" ng-click="changeRecipient(value)">{{value}}</a></li>
+                            <li ng-repeat="value in send.friends"><a href="" ng-click="changeRecipient(value)">{{value.displayname}}</a></li>
                         </ul>
                     
                     </div>
