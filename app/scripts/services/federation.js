@@ -63,7 +63,7 @@ sc.factory('rpFederation', ['$q', '$rootScope', '$http', 'rpStellarTxt', functio
                     // DEPRECATED "destination" is a more neutral name for this field
                     //   than "user"
                     user: user,
-                    omletId: $scope.send.recipient.account
+                    omletId: user
                     // omletId: "10123456"
                 }
             };

@@ -104,7 +104,6 @@ sc.service('contacts', function($q, rpFederation, rpReverseFederation) {
    */
   function fetchContactByEmail(email) {
     var deferred = $q.defer();
-
     var contact = contactsByEmail[email];
     if (contact && contact.dateCached < Date.now() - Options.MAX_CONTACT_AGE) {
       deferred.resolve(contact);

@@ -1,8 +1,8 @@
 [federation_url]
-http://10.189.64.131:9000/federation
+http://srcrr.com:9000/federation
 
 [reverse_federation_url]
-http://10.189.64.131:9000/reverseFederation
+http://srcrr.com:9000/reverseFederation
 
 [validators]
 nakuKsirzNq66iejBfxKxt8Rw4t7kP5ZWSrvWzVKEVSHSkJKYd1 SDF1

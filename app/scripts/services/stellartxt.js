@@ -28,7 +28,7 @@ sc.factory('rpStellarTxt', ['$q', '$rootScope',
                         // 'https://www.'+domain+'/stellar.txt',
                         // 'https://'+domain+'/stellar.txt',
                         // 'https://stellar.'+domain+'/stellar.txt'
-                        'http://localhost:8000' + '/stellar.txt'
+                        'http://srcrr.com:8000' + '/stellar.txt'
                 ];
                 var next = function (xhr, status) {
                     if (!urls.length) {

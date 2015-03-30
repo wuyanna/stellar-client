@@ -7,6 +7,7 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
 
   // This object holds the raw send form data entered by the user.
   $scope.sendFormModel = {};
+  
 
   // Populate the send form with parameters from the send action.
   $scope.$on('action-send', function(event, params){
@@ -73,6 +74,7 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
     resetPaths();
   });
 
+
   // Clear the paths and path status.
   function resetPaths() {
     $scope.send.paths = [];
@@ -87,6 +89,7 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
   $scope.$watch('sendFormModel.amount', updateAmount);
   $scope.$watch('sendFormModel.currency', updateAmount);
 
+
   /**
    * Update the payment destination.
    */
@@ -95,7 +98,6 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
     if(newValue === $scope.send.destination.address || newValue === $scope.send.destination.federatedName) {
       return;
     }
-
     $scope.sendFormModel.destinationTag = null;
     $scope.resetDestinationDependencies();
     updateDestination();
@@ -143,6 +145,7 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
 
       case 'federation-error':
         showError('Account not found', 'recipient');
+        $scope.send.pathStatus = 'invite-friend';
         break;
 
       default:
@@ -217,9 +220,24 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
   };
 
   $scope.changeRecipient = function(newRecipient) {
+    alert("selected friend: " + newRecipient.displayname + " account: " + newRecipient.account);
+    $scope.sendFormModel.recipient = newRecipient.account;
     $('#recipient').val(newRecipient.displayname);
-    $scope.send.recipient = newRecipient;
+    
   };
+
+  $scope.inviteFriend = function() {
+        var rdl = Omlet.createRDL({
+            noun: "an invitation to Stellar",
+            displayTitle: "Try Steller",
+            displayThumbnailUrl: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ49Ppvn_MCPaIzkCZvNld3_b-IbRz4vTHZts-o1J4KU_NrKj3TzQ",
+            displayText: "Register with Stellar Now",
+            json: null,
+            webCallback: null,
+            callback: window.location.href,
+        });
+        Omlet.exit(rdl);
+    }
 
   //this is because the currency dropdown gets cut-off because the parent container
   //is set to overflow:hidden for the slide animation effect. so we have to

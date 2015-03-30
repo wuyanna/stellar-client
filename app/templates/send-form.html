@@ -4,12 +4,13 @@
             <label for="recipient" class="col-md-2">SEND TO</label>
             <div class="col-md-6 input-icon-wrapper">
                 <div class="input-group">
-                    <input id="recipient" name="recipient" type="text" class="form-control" spellcheck="false" ng-model="sendFormModel.recipient"/>
+                    <!-- <input id="recipient" name="recipient" type="text" class="form-control" spellcheck="false" ng-model="sendFormModel.recipient"/> -->
+                    <input id="recipient" name="recipient" type="text" class="form-control" spellcheck="false" />
                     <i class="glyphicon glyphicon-globe"></i>
                     <div class="input-group-btn">
                 
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-click="setOverflowVisible()"><span class="caret"></span></button>
-                        <ul class="dropdown-menu dropdown-menu-right" style="min-width: 450px" role="menu">
+                        <ul class="dropdown-menu dropdown-menu-right" style="min-width: 200px" role="menu">
                             <li ng-repeat="value in send.friends"><a href="" ng-click="changeRecipient(value)">{{value.displayname}}</a></li>
                         </ul>
                     
@@ -28,6 +29,10 @@
             Recipient requires a destination tag to be specified for the transaction. If you don't know the
             destination tag, please contact them before doing a transaction.
             </div>
+        </div>
+        <div class="row" ng-show="invite-friend">
+        <p>Your friend doesn't have stellar accounts. Invite him to use stellar!</p>
+        <button type="button" class="btn btn-default" ng-click="inviteFriend()">Invite</button>
         </div>
         <div class="form-group send-amount">
             <label for="amount" class="col-md-2">AMOUNT</label>
