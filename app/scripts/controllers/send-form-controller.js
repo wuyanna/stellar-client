@@ -237,7 +237,7 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
             callback: window.location.href,
         });
         Omlet.exit(rdl);
-    }
+    };
 
   //this is because the currency dropdown gets cut-off because the parent container
   //is set to overflow:hidden for the slide animation effect. so we have to
