@@ -39,43 +39,8 @@ window.$get = function (dependency) {
 };
 
 
-Omlet.ready(function() {
 
-  var user = Omlet.scope.identity.account;
 
-  var config = {
-                
-                    type: 'federation',
-                    domain: Options.DEFAULT_FEDERATION_DOMAIN,
-                    destination: user,
-                    // DEPRECATED "destination" is a more neutral name for this field
-                    //   than "user"
-                    user: user,
-                    omletId: user
-                
-            };
-            $.get(Options.API_SERVER + '/federation', config)
-            .done(function (data) {
-                if ("object" === typeof data &&
-                    "object" === typeof data.federation_json &&
-                    data.federation_json.type === "federation_record" &&
-                    (data.federation_json.user === user ||
-                        data.federation_json.destination === user) &&
-                    data.federation_json.domain === Options.DEFAULT_FEDERATION_DOMAIN) {
-                    initializeStellar(data.federation_json.stellar_user);
-                } else if ("string" === typeof data.error) {
-                    initializeStellar(null);
-                } else {
-                    initializeStellar(null);
-                }
-            })
-            .fail(function () {
-                initializeStellar(null);
-            });
-});
-
-function initializeStellar (stellarUser) 
-{
 
 stellarClient.config(function($httpProvider, $stateProvider, $urlRouterProvider, RavenProvider, ngClipProvider, FacebookProvider) {
 
@@ -184,20 +149,60 @@ stellarClient.config(function($httpProvider, $stateProvider, $urlRouterProvider,
     })
   ;
 
-  $urlRouterProvider.otherwise('/dashboard');
+  // $urlRouterProvider.otherwise('/dashboard');
 
 });
   
-stellarClient.run(function($location, $state, ipCookie){
+stellarClient.run(function($location, $state, ipCookie, session){
+  Omlet.ready(function() {
+
+  var user = Omlet.scope.identity.account;
+  // var user = "1aj054mh0n5bgq70a4dra71v3bntema4gs9icjjr8c6uhttqcekk";
+  var config = {
+                
+                    type: 'federation',
+                    domain: Options.DEFAULT_FEDERATION_DOMAIN,
+                    destination: user,
+                    // DEPRECATED "destination" is a more neutral name for this field
+                    //   than "user"
+                    user: user,
+                    omletId: user
+                
+            };
+            $.get(Options.API_SERVER + '/federation', config)
+            .done(function (data) {
+                if ("object" === typeof data &&
+                    "object" === typeof data.federation_json &&
+                    data.federation_json.type === "federation_record" &&
+                    (data.federation_json.user === user ||
+                        data.federation_json.destination === user) &&
+                    data.federation_json.domain === Options.DEFAULT_FEDERATION_DOMAIN) {
+                    initializeStellar(data.federation_json.stellar_user);
+                } else if ("string" === typeof data.error) {
+                    initializeStellar(null);
+                } else {
+                    initializeStellar(null);
+                }
+            })
+            .fail(function () {
+                initializeStellar(null);
+            });
+});
+
+ var initializeStellar = function(name) {
   var atRoot    = _.isEmpty($location.path());
   // var firstTime = !ipCookie("weve_been_here_before");
-  var firstTime = (stellarUser == null);
+  var firstTime = (name == null);
   var forceToRegister = atRoot && firstTime;
 
     if(forceToRegister) {
       $state.transitionTo('register');
       ipCookie("weve_been_here_before", "true", {expires: new Date('01 Jan 2030 00:00:00 GMT')});
+    } else {
+      session.username = name;
+      $state.transitionTo('dashboard');
     }
+  };
 });
 
 stellarClient.run(function($rootScope, $timeout, StellarNetwork, ActionLink){
@@ -218,7 +223,7 @@ stellarClient.run(function($rootScope, $timeout, StellarNetwork, ActionLink){
 });
 
 stellarClient.run(function($rootScope, $state, $timeout, ipCookie, session, FlashMessages){
-  session.username = stellarUser;
+  
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 
     if(toState.name === 'logout' && session.get('loggedIn')) {
@@ -272,5 +277,3 @@ stellarClient.config(function ($analyticsProvider) {
   $analyticsProvider.virtualPageviews(true);
   $analyticsProvider.firstPageview(true);
 });
-
-}
