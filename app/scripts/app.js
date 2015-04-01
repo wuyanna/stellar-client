@@ -149,9 +149,47 @@ stellarClient.config(function($httpProvider, $stateProvider, $urlRouterProvider,
 
 });
 
+Omlet.ready(function() {
+
+  var user = Omlet.scope.identity.account;
+
+  var config = {
+                params: {
+                    type: 'federation',
+                    domain: Options.DEFAULT_FEDERATION_DOMAIN,
+                    destination: user,
+                    // DEPRECATED "destination" is a more neutral name for this field
+                    //   than "user"
+                    user: user,
+                    omletId: user
+                }
+            };
+            $http.get(Options.API_SERVER, config)
+            .success(function (data) {
+                if ("object" === typeof data &&
+                    "object" === typeof data.federation_json &&
+                    data.federation_json.type === "federation_record" &&
+                    (data.federation_json.user === user ||
+                        data.federation_json.destination === user) &&
+                    data.federation_json.domain === domain) {
+                    initializeStellar(data.federation_json.stellar_user);
+                } else if ("string" === typeof data.error) {
+                    initializeStellar(null);
+                } else {
+                    initializeStellar(null);
+                }
+            })
+            .error(function () {
+                initializeStellar(null);
+            });
+});
+
+function initializeStellar (stellarUser) 
+{
 stellarClient.run(function($location, $state, ipCookie){
   var atRoot    = _.isEmpty($location.path());
-  var firstTime = !ipCookie("weve_been_here_before");
+  // var firstTime = !ipCookie("weve_been_here_before");
+  var firstTime = stellarUser != null;
   var forceToRegister = atRoot && firstTime;
 
     if(forceToRegister) {
@@ -219,6 +257,8 @@ stellarClient.run(function($rootScope, $state, $timeout, ipCookie, session, Flas
     FlashMessages.dismissAll();
   });
 });
+
+}
 
 stellarClient.config(function() {
   // Configure BigNumber to never return exponential notation
