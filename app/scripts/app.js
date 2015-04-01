@@ -41,8 +41,8 @@ window.$get = function (dependency) {
 
 Omlet.ready(function() {
 
-  var user = Omlet.scope.identity.account;
-
+  // var user = Omlet.scope.identity.account;
+  var user = "1aj054mh0n5bgq70a4dra71v3bntema4gs9icjjr8c6uhttqcekk";
   var config = {
                 
                     type: 'federation',
@@ -218,7 +218,7 @@ stellarClient.run(function($rootScope, $timeout, StellarNetwork, ActionLink){
 });
 
 stellarClient.run(function($rootScope, $state, $timeout, ipCookie, session, FlashMessages){
-
+  session.username = stellarUser;
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 
     if(toState.name === 'logout' && session.get('loggedIn')) {
