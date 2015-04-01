@@ -145,7 +145,7 @@ stellarClient.config(function($httpProvider, $stateProvider, $urlRouterProvider,
     })
   ;
 
-  $urlRouterProvider.otherwise('/dashboard');
+  // $urlRouterProvider.otherwise('/');
 
 });
 
@@ -186,10 +186,11 @@ Omlet.ready(function() {
 
 function initializeStellar (stellarUser) 
 {
+  console.log("initializeStellar");
 stellarClient.run(function($location, $state, ipCookie){
   var atRoot    = _.isEmpty($location.path());
   // var firstTime = !ipCookie("weve_been_here_before");
-  var firstTime = stellarUser != null;
+  var firstTime = (stellarUser != null);
   var forceToRegister = atRoot && firstTime;
 
     if(forceToRegister) {
