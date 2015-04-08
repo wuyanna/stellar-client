@@ -43,7 +43,7 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
 
   session.put('inviteCode', $stateParams.inviteCode);
 
-  var pinDigit = new Array; // Array
+  $scope.pinDigit = new Array; // Array
 
   $scope.status = {
     usernameAvailable:    null,
@@ -174,8 +174,9 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
   };
 
   $scope.recordDigitAndMove = function(field, nextFieldID) {
-    var i = parseInt(field.id.substr(field.value.length - 1)) - 1;
-    pinDigit[i] = field.value;
+    var i = parseInt(field.id.substr(field.id.length - 1)) - 1;
+      alert("1");
+    // $scope.pinDigit[i] = field.value;
     if (field.value.length == 1) {
         document.getElementById(nextFieldID).focus();
     }
@@ -226,12 +227,12 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
     }
     var pin = "";
     for(var i = 0; i < 4; i++) {
-      if (pinDigit[i].length < 1) {
+      if ($scope.pinDigit[i].length < 1) {
         validInput = false;
         $scope.errors.secretErrors.push('Invalid pin.');
         break;
       }
-      pin += pinDigit[i];
+      pin += $scope.pinDigit[i];
     }
     data.pin = pin;
 

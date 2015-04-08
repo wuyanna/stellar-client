@@ -75,10 +75,10 @@
             <div class="form-group">
                 <label for="username" class="col-sm-3">4-DIGIT PIN</label>
                 <div class="col-sm-6">
-                    <input type="password" maxlength=1 id="pinDigit1" class="form-control" ng-change="recordDigitAndMove(this,'pinDigit2')" />
-                    <input type="password" maxlength=1 id="pinDigit2" class="form-control" ng-change="recordDigitAndMove(this,'pinDigit3')" />
-                    <input type="password" maxlength=1 id="pinDigit3" class="form-control" ng-change="recordDigitAndMove(this,'pinDigit4')" />
-                    <input type="password" maxlength=1 id="pinDigit4" class="form-control" ng-change="recordDigitAndMove(this,null)" />
+                    <input type="password" maxlength=1 id="pinDigit1" class="form-control form-control-pin" ng-model="pinDigit[0]" ng-change="recordDigitAndMove(this,'pinDigit2')" />
+                    <input type="password" maxlength=1 id="pinDigit2" class="form-control form-control-pin" ng-model="pinDigit[1]" ng-change="recordDigitAndMove(this,'pinDigit3')" />
+                    <input type="password" maxlength=1 id="pinDigit3" class="form-control form-control-pin" ng-model="pinDigit[2]" ng-change="recordDigitAndMove(this,'pinDigit4')" />
+                    <input type="password" maxlength=1 id="pinDigit4" class="form-control form-control-pin" ng-model="pinDigit[3]" ng-change="recordDigitAndMove(this,null)" />
                 </div>
             </div>
 
