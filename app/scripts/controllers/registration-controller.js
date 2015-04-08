@@ -173,11 +173,10 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
     $scope.status.secretValid = true;
   };
 
-  $scope.recordDigitAndMove = function(field, nextFieldID) {
-    var i = parseInt(field.id.substr(field.id.length - 1)) - 1;
-      alert("1");
+  $scope.recordDigitAndMove = function(currentId, nextFieldID) {
+    var i = parseInt(currentId.substr(currentId.length - 1)) - 1;
     // $scope.pinDigit[i] = field.value;
-    if (field.value.length == 1) {
+    if (document.getElementById(currentId).value.length == 1 && nextFieldID != null) {
         document.getElementById(nextFieldID).focus();
     }
   };
