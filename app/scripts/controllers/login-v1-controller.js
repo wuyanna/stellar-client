@@ -4,7 +4,15 @@ angular.module('stellarClient').controller('LoginV1Ctrl', function($rootScope, $
   setTimeout(function() {
     angular.element('#password')[0].focus();
   }, 200);
+  $scope.pinDigit = new Array; // Array
 
+  $scope.recordDigitAndMove = function(currentId, nextFieldID) {
+    var i = parseInt(currentId.substr(currentId.length - 1)) - 1;
+    // $scope.pinDigit[i] = field.value;
+    if (document.getElementById(currentId).value.length == 1 && nextFieldID != null) {
+        document.getElementById(nextFieldID).focus();
+    }
+  };
   // HACK: Perform AJAX login, but send a POST request to a hidden iframe to
   // coax Chrome into offering to remember the password.
   $scope.attemptLogin = function() {
@@ -12,12 +20,40 @@ angular.module('stellarClient').controller('LoginV1Ctrl', function($rootScope, $
     return true;
   };
 
+  $scope.getWalletId = function() {
+    var deferred = $q.defer();
+    var pin = "";
+      for(var i = 0; i < 4; i++) {
+        if ($scope.pinDigit[i].length < 1) {
+          validInput = false;
+          $scope.errors.secretErrors.push('Invalid pin.');
+          break;
+        }
+        pin += $scope.pinDigit[i];
+      }
+
+    $http.post(Options.API_SERVER + '/user/pinLogin', {username: $stateParams.username})
+      .success(function(body) {
+        deferred.resolve(body.data.encryptedWallet);
+      })
+      .error(function(body, status) {
+        switch(status) {
+
+          default:
+            $scope.loginError = 'Invalid Pin.';
+        }
+        deferred.reject();
+      });
+
+    return deferred.promise;
+  };
+
   $scope.asyncLogin = singletonPromise(function() {
     $scope.loginError = null;
     if (!$scope.password) {
       return $q.reject("Password cannot be blank");
     }
-    return Wallet.deriveId($stateParams.username, $scope.password)
+    return getWalletId($stateParams.username, $scope.password)
       .then(performLogin)
       .then(migrateWallet)
       .then(markMigrated)

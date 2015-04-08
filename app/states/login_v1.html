@@ -2,7 +2,7 @@
   <div class="container">
 
     <flash-messages></flash-messages>
-    <h1 class="title">Unlock Wallet <span class="login-back"><a ui-sref="login">&laquo; back</a></span></h1>
+    <h1 class="title">Unlock Wallet (PIN) <span class="login-back"><a ui-sref="login">&laquo; back</a></span></h1>
 
     <iframe name="chrome-password-manager-fix" src="about:blank" style="display:none;"></iframe>
     <form role="form" class="form-horizontal" ng-controller="LoginV1Ctrl" ng-submit="attemptLogin()"
@@ -12,7 +12,7 @@
           <div class="tip">{{ loginError }}</div>
         </div>
       </div>
-      <div class="form-group">
+<!--       <div class="form-group">
         <label for="password" class="col-sm-3">PASSWORD</label>
         <div class="col-sm-6 input-icon-wrapper">
           <input id="password" type="password" class="form-control" ng-model="password" ng-disabled="asyncLogin.isLoading()" autocomplete="off" />
@@ -25,7 +25,18 @@
           <label for="remember-me" class="remember-me"> Remember me</label>
           <div class="warning" ng-show="rememberMe"><span class="warning-title">WARNING</span> This saves your password on your local disk, meaning an attacker with access to your files could steal your wallet.</div>
         </div>
-      </div>
+      </div> -->
+      <!-- Pin form -->
+            <div class="form-group">
+                <label for="username" class="col-sm-3">4-DIGIT PIN</label>
+                <div class="col-sm-6">
+                    <input type="password" maxlength=1 id="pinDigit1" class="form-control form-control-pin" ng-model="pinDigit[0]" ng-change="recordDigitAndMove('pinDigit1','pinDigit2')" />
+                    <input type="password" maxlength=1 id="pinDigit2" class="form-control form-control-pin" ng-model="pinDigit[1]" ng-change="recordDigitAndMove('pinDigit2','pinDigit3')" />
+                    <input type="password" maxlength=1 id="pinDigit3" class="form-control form-control-pin" ng-model="pinDigit[2]" ng-change="recordDigitAndMove('pinDigit3','pinDigit4')" />
+                    <input type="password" maxlength=1 id="pinDigit4" class="form-control form-control-pin" ng-model="pinDigit[3]" ng-change="recordDigitAndMove('pinDigit4', null)" />
+                </div>
+            </div>
+
       <div class="form-group">
         <div class="errors col-sm-12"></div>
       </div>

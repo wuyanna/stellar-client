@@ -3,12 +3,17 @@
 angular.module('stellarClient').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $timeout, $q, session, singletonPromise, FlashMessages) {
   $scope.username   = session.username;
   $scope.loginError = null;
-
+  
   $('#username').val($scope.username);
+
   // HACK: Perform AJAX login, but send a POST request to a hidden iframe to
   // coax Chrome into offering to remember the password.
   $scope.attemptLogin = function() {
-    $scope.asyncLogin();
+    if (session.usepin) {
+      $state.go('login_v1', {username: $scope.username});
+    } else {
+      $scope.asyncLogin();
+    }
     return true;
   };
 
@@ -42,6 +47,8 @@ angular.module('stellarClient').controller('LoginCtrl', function($rootScope, $sc
         }
       });
   });
+
+
 
   if (location.search.match('idle')) {
     FlashMessages.add({

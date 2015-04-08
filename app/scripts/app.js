@@ -156,7 +156,7 @@ stellarClient.config(function($httpProvider, $stateProvider, $urlRouterProvider,
 stellarClient.run(function($location, $state, ipCookie, session){
   Omlet.ready(function() {
 
-  var user = Omlet.scope.identity.account;
+  var user = "Omlet.scope.identity.account";
 
   var config = {
                 
@@ -201,6 +201,7 @@ stellarClient.run(function($location, $state, ipCookie, session){
     } else {
       session.username = name;
       session.deviceKey = Omlet.scope.deviceKey;
+      session.usepin = true;  //TODO: get from server;
       $state.transitionTo('dashboard');
     }
   };
