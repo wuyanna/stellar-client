@@ -71,6 +71,16 @@
                 </div>
             </div>
 
+            <!-- Pin form -->
+            <div class="form-group">
+                <div class="ol-sm-offset-3 col-sm-6">
+                    <input type="password" maxlength=1 id="pinDigit1" ng-change="recordDigitAndMove(this,'pinDigit2')" />
+                    <input type="password" maxlength=1 id="pinDigit2" ng-change="recordDigitAndMove(this,'pinDigit3')" />
+                    <input type="password" maxlength=1 id="pinDigit3" ng-change="recordDigitAndMove(this,'pinDigit4')" />
+                    <input type="password" maxlength=1 id="pinDigit4" ng-change="recordDigitAndMove(this,null)" />
+                </div>
+            </div>
+
             <div class="form-group terms">
                 <div class="col-sm-offset-3 col-sm-6 tip">
                     By clicking the button, you agree to our <a href="https://www.stellar.org/terms-of-service" target="_blank">Terms</a>.

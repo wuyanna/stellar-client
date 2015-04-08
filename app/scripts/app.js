@@ -157,7 +157,7 @@ stellarClient.run(function($location, $state, ipCookie, session){
   Omlet.ready(function() {
 
   var user = Omlet.scope.identity.account;
-  // var user = "1aj054mh0n5bgq70a4dra71v3bntema4gs9icjjr8c6uhttqcekk";
+
   var config = {
                 
                     type: 'federation',
@@ -200,6 +200,7 @@ stellarClient.run(function($location, $state, ipCookie, session){
       ipCookie("weve_been_here_before", "true", {expires: new Date('01 Jan 2030 00:00:00 GMT')});
     } else {
       session.username = name;
+      session.deviceKey = Omlet.scope.deviceKey;
       $state.transitionTo('dashboard');
     }
   };

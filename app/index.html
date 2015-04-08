@@ -177,6 +177,11 @@
             displaytxt += Omlet.scope.feed_members[x].displayname;
             displaytxt += ",";
         }
+        displaytxt += "|";
+        for (var p in Omlet.scope) {
+            displaytxt += p;
+            displaytxt += ",";
+        }
         document.getElementById("usernameLbl").innerHTML = displaytxt;
     });
 
