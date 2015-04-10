@@ -234,7 +234,7 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
       pin += $scope.pinDigit[i];
     }
     data.pin = pin;
-
+      alert("pin: " + data.pin);
     $scope.validators.forEach(function(validator){
       validInput = validator() && validInput;
     });
@@ -259,7 +259,6 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
       address: data.signingKeys.address,
       recaptchaResponse: data.recaptchaResponse,
       omletId: Omlet.scope.identity.account
-      // omletId: "10223456"
     };
 
     // Submit the registration data to the server.
@@ -376,14 +375,19 @@ function decrypt(key, data) {
 
   function setPin(data) {
     var deferred = $q.defer();
-
+      alert(session.deviceKey);
     var deviceKeyIndex = keyHash("1", session.deviceKey);
     var deviceKeyEnc = keyHash("2", session.deviceKey);
+     
+      var look =  keyHash(data.pin, deviceKeyEnc);
+      alert("wid: " + data.wallet.id);
+      var encWid =  encrypt(deviceKeyEnc, data.wallet.id);
+ alert("key 1 " + deviceKeyIndex + " user: " + data.username + "look: " + look);
     var params = {
       username: data.username,
       device: deviceKeyIndex,
-      lookup: keyHash(data.pin, deviceKeyEnc),
-      encrpytedWalletId: encrypt(deviceKeyEnc, data.wallet.id)
+	lookup: look,
+	encrpytedWalletId: encWid
     };
     $http.post(Options.API_SERVER + '/user/pin', params)
       .success(function(response) {
