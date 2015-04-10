@@ -10,8 +10,10 @@ angular.module('stellarClient').controller('LoginCtrl', function($rootScope, $sc
   // coax Chrome into offering to remember the password.
   $scope.attemptLogin = function() {
     if (session.usepin) {
+      // use pin to login
       $state.go('login_v1', {username: $scope.username});
     } else {
+      // use password to login
       $scope.asyncLogin();
     }
     return true;
