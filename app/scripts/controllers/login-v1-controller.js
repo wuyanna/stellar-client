@@ -19,6 +19,80 @@ angular.module('stellarClient').controller('LoginV1Ctrl', function($rootScope, $
     $scope.asyncLogin();
     return true;
   };
+    function keyHash(key, token) {
+    var hmac = new sjcl.misc.hmac(key, sjcl.hash.sha512);
+    return sjcl.codec.hex.fromBits(sjcl.bitArray.bitSlice(hmac.encrypt(token), 0, 256));
+  };
+
+var cryptConfig = {
+  cipher : 'aes',
+  mode   : 'ccm',
+  ts     : 64,   // tag length
+  ks     : 256,  // key size
+  iter   : 1000  // iterations (key derivation)
+};
+/**
+ * Encrypt data
+ *
+ * @param {string} key
+ * @param {string} data
+ */
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+function encrypt(key, data) {
+  key = sjcl.codec.hex.toBits(key);
+
+  var opts = extend(true, {}, cryptConfig);
+
+  var encryptedObj = JSON.parse(sjcl.encrypt(key, data, opts));
+  var version = [sjcl.bitArray.partial(8, 0)];
+  var initVector = sjcl.codec.base64.toBits(encryptedObj.iv);
+  var ciphertext = sjcl.codec.base64.toBits(encryptedObj.ct);
+
+  var encryptedBits = sjcl.bitArray.concat(version, initVector);
+  encryptedBits = sjcl.bitArray.concat(encryptedBits, ciphertext);
+
+  return sjcl.codec.base64.fromBits(encryptedBits);
+};
+
+/**
+ * Decrypt data
+ *
+ * @param {string} key
+ * @param {string} data
+ */
+
+function decrypt(key, data) {
+  
+  key = sjcl.codec.hex.toBits(key);
+  var encryptedBits = sjcl.codec.base64.toBits(data);
+
+  var version = sjcl.bitArray.extract(encryptedBits, 0, 8);
+
+  if (version !== 0) {
+    throw new Error('Unsupported encryption version: '+version);
+  }
+
+  var encrypted = extend(true, {}, cryptConfig, {
+    iv: sjcl.codec.base64.fromBits(sjcl.bitArray.bitSlice(encryptedBits, 8, 8+128)),
+    ct: sjcl.codec.base64.fromBits(sjcl.bitArray.bitSlice(encryptedBits, 8+128))
+  });
+
+  return sjcl.decrypt(key, JSON.stringify(encrypted));
+};
 
   $scope.getWalletId = function() {
     var deferred = $q.defer();
@@ -31,10 +105,17 @@ angular.module('stellarClient').controller('LoginV1Ctrl', function($rootScope, $
         }
         pin += $scope.pinDigit[i];
       }
-
-    $http.post(Options.API_SERVER + '/user/pinLogin', {username: $stateParams.username})
+  var deviceKeyIndex = keyHash("1", session.deviceKey);
+    var deviceKeyEnc = keyHash("2", session.deviceKey);
+    var params = {
+      username: $stateParams.username,
+      device: deviceKeyIndex,
+      lookup: keyHash(data.pin, deviceKeyEnc)
+    };
+    $http.post(Options.API_SERVER + '/user/pinLogin', params)
       .success(function(body) {
-        deferred.resolve(body.data.encryptedWallet);
+        var wid = decrypt(deviceKeyEnc, body.data.encryptedWallet);
+        deferred.resolve(wid);
       })
       .error(function(body, status) {
         switch(status) {
@@ -53,7 +134,7 @@ angular.module('stellarClient').controller('LoginV1Ctrl', function($rootScope, $
     if (!$scope.password) {
       return $q.reject("Password cannot be blank");
     }
-    return getWalletId($stateParams.username, $scope.password)
+    return getWalletId()
       .then(performLogin)
       .then(migrateWallet)
       .then(markMigrated)

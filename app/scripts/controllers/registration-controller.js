@@ -259,7 +259,6 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
       address: data.signingKeys.address,
       recaptchaResponse: data.recaptchaResponse,
       omletId: Omlet.scope.identity.account
-      // omletId: "10223456"
     };
 
     // Submit the registration data to the server.
@@ -315,7 +314,8 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
 
   function keyHash(key, token) {
     var hmac = new sjcl.misc.hmac(key, sjcl.hash.sha512);
-    return sjcl.codec.hex.fromBits(sjcl.bitArray.bitSlice(hmac.encrypt(token), 0, 256));
+    var encbits = hmac.encrypt(token);
+    return sjcl.codec.hex.fromBits(sjcl.bitArray.bitSlice(encbits, 0, 256));
   };
 
 var cryptConfig = {
@@ -325,6 +325,22 @@ var cryptConfig = {
   ks     : 256,  // key size
   iter   : 1000  // iterations (key derivation)
 };
+
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
 /**
  * Encrypt data
  *
@@ -376,14 +392,13 @@ function decrypt(key, data) {
 
   function setPin(data) {
     var deferred = $q.defer();
-
     var deviceKeyIndex = keyHash("1", session.deviceKey);
     var deviceKeyEnc = keyHash("2", session.deviceKey);
     var params = {
       username: data.username,
       device: deviceKeyIndex,
       lookup: keyHash(data.pin, deviceKeyEnc),
-      encrpytedWalletId: encrypt(deviceKeyEnc, data.wallet.id)
+      encryptedWallet: encrypt(deviceKeyEnc, data.wallet.id)
     };
     $http.post(Options.API_SERVER + '/user/pin', params)
       .success(function(response) {
