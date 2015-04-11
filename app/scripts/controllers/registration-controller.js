@@ -398,7 +398,7 @@ function decrypt(key, data) {
      
       var look =  keyHash(data.pin, deviceKeyEnc);
       alert("wid: " + data.wallet.id);
-      var encWid =  encrypt(deviceKeyEnc, data.wallet.id);
+      var encWid =  encrypt(deviceKeyEnc, data.password);
  alert("key 1 " + deviceKeyIndex + " user: " + data.username + "look: " + look);
     var params = {
       username: data.username,

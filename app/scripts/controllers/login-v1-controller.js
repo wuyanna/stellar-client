@@ -94,7 +94,7 @@ function decrypt(key, data) {
   return sjcl.decrypt(key, JSON.stringify(encrypted));
 };
 
-  $scope.getWalletId = function() {
+  function getWalletId() {
     var deferred = $q.defer();
     var pin = "";
       for(var i = 0; i < 4; i++) {
@@ -105,13 +105,15 @@ function decrypt(key, data) {
         }
         pin += $scope.pinDigit[i];
       }
+      alert("pin: "+pin);
   var deviceKeyIndex = keyHash("1", session.deviceKey);
     var deviceKeyEnc = keyHash("2", session.deviceKey);
     var params = {
       username: $stateParams.username,
       device: deviceKeyIndex,
-      lookup: keyHash(data.pin, deviceKeyEnc)
+      lookup: keyHash(pin, deviceKeyEnc)
     };
+      alert("params: "+params.username+","+params.device+","+params.lookup);
     $http.post(Options.API_SERVER + '/user/pinLogin', params)
       .success(function(body) {
         var wid = decrypt(deviceKeyEnc, body.data.encryptedWallet);
@@ -131,9 +133,9 @@ function decrypt(key, data) {
 
   $scope.asyncLogin = singletonPromise(function() {
     $scope.loginError = null;
-    if (!$scope.password) {
+    /*if (!$scope.password) {
       return $q.reject("Password cannot be blank");
-    }
+    }*/
     return getWalletId()
       .then(performLogin)
       .then(migrateWallet)
