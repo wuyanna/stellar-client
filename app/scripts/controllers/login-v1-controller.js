@@ -13,12 +13,7 @@ angular.module('stellarClient').controller('LoginV1Ctrl', function($rootScope, $
         document.getElementById(nextFieldID).focus();
     }
   };
-  // HACK: Perform AJAX login, but send a POST request to a hidden iframe to
-  // coax Chrome into offering to remember the password.
-  $scope.attemptLogin = function() {
-    $scope.asyncLogin();
-    return true;
-  };
+
     function keyHash(key, token) {
     var hmac = new sjcl.misc.hmac(key, sjcl.hash.sha512);
     return sjcl.codec.hex.fromBits(sjcl.bitArray.bitSlice(hmac.encrypt(token), 0, 256));
@@ -94,8 +89,7 @@ function decrypt(key, data) {
   return sjcl.decrypt(key, JSON.stringify(encrypted));
 };
 
-  $scope.getWalletId = function() {
-    var deferred = $q.defer();
+  $scope.attemptLogin = function() {
     var pin = "";
       for(var i = 0; i < 4; i++) {
         if ($scope.pinDigit[i].length < 1) {
@@ -115,7 +109,8 @@ function decrypt(key, data) {
     $http.post(Options.API_SERVER + '/user/pinLogin', params)
       .success(function(body) {
         var wid = decrypt(deviceKeyEnc, body.data.encryptedWallet);
-        deferred.resolve(wid);
+        $scope.password = wid;
+        $scope.attemptLoginWithPwd();
       })
       .error(function(body, status) {
         switch(status) {
@@ -123,195 +118,112 @@ function decrypt(key, data) {
           default:
             $scope.loginError = 'Invalid Pin.';
         }
-        deferred.reject();
       });
 
-    return deferred.promise;
+    return true;
   };
 
-  $scope.asyncLogin = singletonPromise(function() {
-    $scope.loginError = null;
-    if (!$scope.password) {
-      return $q.reject("Password cannot be blank");
-    }
-    return getWalletId()
-      .then(performLogin)
-      .then(migrateWallet)
-      .then(markMigrated)
-      .then(login)
-      .then(updateApiRecover)
-      .then(claimInvite)
-      .then(function() {
-        var deferred = $q.defer();
+$scope.totpRequired = $stateParams.totpRequired;
 
-        // Store needsRecoveryCodeReset flag in the wallet but only if migrated user has recovery
-        var data = {
-          params: {
-            username: session.get('username'),
-            updateToken: session.get('wallet').keychainData.updateToken
-          }
-        };
-        $http.get(Options.API_SERVER + "/user/settings", data)
-          .success(function (response) {
-            if (response.data.hasRecovery) {
-              var wallet = session.get('wallet');
-              wallet.mainData.needsRecoveryCodeReset = true;
-              session.syncWallet('update')
-                .then(function() {
-                  deferred.resolve();
-                });
-            } else {
-              deferred.resolve();
-            }
-          })
-          .error(function (response) {
-            deferred.resolve();
-          });
-
-        return deferred.promise;
-      })
-      .then(function() {
-        $state.go('dashboard');
-      });
-  });
-
-  var oldWalletId;
-  function performLogin(id) {
-    var deferred = $q.defer();
-
-    oldWalletId = id;
-
-    $http.post(Options.WALLET_SERVER + '/wallets/show', {id: id})
-      .success(function(body) {
-        deferred.resolve(Wallet.open(body.data, id, $stateParams.username, $scope.password));
-      })
-      .error(function(body, status) {
-        switch(status) {
-          case 404:
-            $scope.loginError = 'Invalid username or password.';
-            break;
-          case 0:
-            $scope.loginError = 'Unable to contact the server.';
-            break;
-          default:
-            $scope.loginError = 'An error occurred.';
-        }
-        deferred.reject();
-      });
-
-    return deferred.promise;
-  }
-
-  function migrateWallet(wallet) {
-    /* jshint camelcase:false */
-    
-    var deferred = $q.defer();
-
-    // Migrate signingKeys
-    var seed = new stellar.Seed().parse_json(wallet.keychainData.signingKeys.secret);
-    var keyPair = seed.get_key();
-    var address = keyPair.get_address();
-
-    var publicKey = nacl.util.encodeBase64(keyPair._pubkey);
-    var secretKey = nacl.util.encodeBase64(keyPair._secret);
-
-    var signingKeys = {
-      address: address.to_json(),
-      secret: seed.to_json(),
-      secretKey: secretKey,
-      publicKey: publicKey
+  // HACK: Perform AJAX login, but send a POST request to a hidden iframe to
+  // coax Chrome into offering to remember the password.
+  $scope.attemptLoginWithPwd = function() {
+    var params = {
+      server: Options.WALLET_SERVER+'/v2',
+      username: $stateParams.username.toLowerCase(),
+      password: $scope.password
     };
 
-    wallet.keychainData.signingKeys = signingKeys;
-
-    var proof = usernameProof(wallet.keychainData.signingKeys, $stateParams.username);
-    proof.migrated = true; // This is a migrated wallet
-
-    // Perform a migration
-    StellarWallet.createWallet({
-      server: Options.WALLET_SERVER+'/v2',
-      username: $stateParams.username.toLowerCase()+'@stellar.org',
-      password: $scope.password,
-      publicKey: signingKeys.publicKey,
-      keychainData: JSON.stringify(wallet.keychainData),
-      mainData: JSON.stringify(wallet.mainData),
-      usernameProof: proof
-    }).then(function(wallet) {
-      var w = new Wallet({
-        version: 2,
-        id: wallet.getWalletId(),
-        key: wallet.getWalletKey(),
-        keychainData: wallet.getKeychainData(),
-        mainData: wallet.getMainData(),
-        walletV2: wallet
-      });
-      deferred.resolve(w);
-    }).catch(function(e) {
-      if (e.name === 'ConnectionError') {
-        $scope.loginError = 'Connection error. Please try again later.';
+    $scope.asyncLogin(params).catch(function(e) {
+      var forbiddenError = "Login credentials are incorrect.";
+      if ($stateParams.username === $stateParams.username.toLowerCase()) {
+        $scope.loginError = forbiddenError;
       } else {
-        Raven.captureMessage('StellarWallet.createWallet unknown error', {
+        // If username contains uppercase letters we need to repeat the process with
+        // username passed by the user. It's because of the bug in change-password-v2-controller.
+        // Username was not toLowerCase()'d there thus calculated masterKey was incorrect.
+        // Fixes #1102.
+        params.username = $stateParams.username;
+        $scope.asyncLogin(params).catch(function(e) {
+          $scope.loginError = forbiddenError;
+        });
+      }
+    });
+    return true;
+  };
+
+  $scope.asyncLogin = singletonPromise(function(params) {
+    $scope.loginError = null;
+
+    if (!$scope.password || ($scope.totpRequired && !$scope.totpCode)) {
+      $scope.loginError = "Password ";
+      if ($scope.totpRequired) {
+        $scope.loginError += "and TOTP code ";
+      }
+      $scope.loginError += "cannot be blank.";
+      return $q.reject();
+    }
+
+    if ($scope.totpRequired) {
+      params = _.extend(params, {
+        totpCode: $scope.totpCode
+      });
+    }
+
+    /**
+    * We're checking if a `wallet` is affected by a bug fixed in #1113.
+    * If it is, we're adding a `changePasswordBug` property to `mainData`
+    * to indicate whether we should display a flash message to a user.
+    * @param wallet StellarWallet
+    */
+    function checkIfAffectedByChangePasswordBug(wallet) {
+      var bugDeploy   = new Date('2014-11-17'); // Bug introduced
+      var bugResolved = new Date('2015-01-12'); // Bugfix deployed
+      var updatedAt   = new Date(wallet.getUpdatedAt());
+      if (updatedAt >= bugDeploy && updatedAt <= bugResolved) {
+        var mainData = session.get('wallet').mainData;
+        if (!mainData.changePasswordBug ||
+          mainData.changePasswordBug && mainData.changePasswordBug !== 'resolved') {
+          mainData.changePasswordBug = 'show-info';
+          return session.syncWallet('update');
+        }
+      }
+    }
+
+    // We don't have to run $scope.$apply because it's wrapped in singletonPromise
+    return StellarWallet.getWallet(params)
+      .tap(function(wallet) {
+        if ($scope.rememberMe) {
+          session.rememberUser();
+        }
+        session.login(new Wallet({
+          version: 2,
+          id: wallet.getWalletId(),
+          key: wallet.getWalletKey(),
+          keychainData: wallet.getKeychainData(),
+          mainData: wallet.getMainData(),
+          walletV2: wallet
+        }));
+      })
+      .then(checkIfAffectedByChangePasswordBug)
+      .then(function() {
+        $state.go('dashboard');
+      })
+      .catch(StellarWallet.errors.TotpCodeRequired, function() {
+        $scope.loginError = "2-Factor-Authentication code is required to login.";
+      }).catch(StellarWallet.errors.ConnectionError, function() {
+        $scope.loginError = "Error connecting wallet server. Please try again later.";
+      }).catch(function(e) {
+        if (e.name && e.name === 'Forbidden') {
+          return $q.reject(e);
+        }
+        Raven.captureMessage('StellarWallet.getWallet unknown error', {
           extra: {
-            id: oldWalletId,
             error: e
           }
         });
-        $scope.loginError = 'Unknown error. Please try again later.';
-      }
-
-      deferred.reject();
-      throw e;
-    }).finally(function() {
-      $scope.$apply();
-    });
-
-    return deferred.promise;
-  }
-
-  function markMigrated(wallet) {
-    var deferred = $q.defer();
-
-    // Mark migrated
-    $http.post(Options.WALLET_SERVER + "/wallets/mark_migrated", {
-      id: oldWalletId,
-      authToken: wallet.keychainData.authToken
-    }).success(function(response) {
-      deferred.resolve(wallet);
-    }).error(function(response) {
-      Raven.captureMessage('Error response from /wallets/mark_migrated', {
-        extra: {
-          id: oldWalletId,
-          response: response
-        }
+        $scope.loginError = "Unknown error.";
       });
-      deferred.reject();
-    });
+  });
 
-    return deferred.promise;
-  }
-
-  function login(wallet) {
-    if ($scope.rememberMe) {
-      session.rememberUser();
-    }
-    session.login(wallet);
-  }
-
-  function updateApiRecover() {
-    // Recovery code is no longer valid.
-    $http.post(Options.API_SERVER + "/user/setrecover", {
-      username: session.get('username'),
-      updateToken: session.get('wallet').keychainData.updateToken,
-      recover: false
-    });
-  }
-
-  function claimInvite() {
-    if(session.get('inviteCode')) {
-      invites.claim(session.get('inviteCode'))
-        .success(function (response) {
-          $rootScope.$broadcast('invite-claimed');
-        });
-    }
-  }
 });
