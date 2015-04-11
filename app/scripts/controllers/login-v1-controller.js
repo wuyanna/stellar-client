@@ -111,8 +111,10 @@ function decrypt(key, data) {
       alert("params: "+params.username+","+params.device+","+params.lookup);
     $http.post(Options.API_SERVER + '/user/pinLogin', params)
       .success(function(body) {
+	  alert("data received: " + deviceKeyEnc + ", " + body.data.encryptedWallet);
         var wid = decrypt(deviceKeyEnc, body.data.encryptedWallet);
         $scope.password = wid;
+	  alert("password: " + wid);
         $scope.attemptLoginWithPwd();
       })
       .error(function(body, status) {
@@ -133,7 +135,7 @@ function decrypt(key, data) {
   $scope.attemptLoginWithPwd = function() {
     var params = {
       server: Options.WALLET_SERVER+'/v2',
-      username: $stateParams.username.toLowerCase(),
+      username: $stateParams.username.toLowerCase()+'@stellar.org',
       password: $scope.password
     };
 

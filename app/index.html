@@ -155,36 +155,23 @@
 
     <script type="text/javascript">
 
-    function shareStellar() {
-        var rdl = Omlet.createRDL({
-            noun: "a web app",
-            displayTitle: "Steller",
-            displayThumbnailUrl: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ49Ppvn_MCPaIzkCZvNld3_b-IbRz4vTHZts-o1J4KU_NrKj3TzQ",
-            displayText: "Welcome to Stellar",
-            json: null,
-            webCallback: null,
-            callback: window.location.href,
-        });
-        Omlet.exit(rdl);
-    }
-
-    Omlet.ready(function() {
-        displaytxt = "Welcome to Stellar Wallet " + Omlet.scope.identity.name + "! <br />Your friends: ";
-        /*for (var x in  Omlet.scope.feed_members) {
+    /*Omlet.ready(function() {
+        displaytxt = "Welcome to Stellar Wallet " + Omlet.scope.identity.name; + "! <br />Your friends: ";
+        for (var x in  Omlet.scope.feed_members) {
             if (Omlet.scope.identity.account === Omlet.scope.feed_members[x].account) {
                 continue;
             }
             displaytxt += Omlet.scope.feed_members[x].displayname;
             displaytxt += ",";
-        }*/
+        }
         displaytxt += "|";
         for (var p in Omlet.scope) {
             displaytxt += p;
             displaytxt += ",";
-            /*for (var q in Omlet.scope[p]) {
+            for (var q in Omlet.scope[p]) {
               displaytxt += q;
               displaytxt += ":";
-            }*/
+            }
         }
         displaytxt += "#";
         for (var p in Omlet.scope.identity) {
@@ -192,7 +179,7 @@
             displaytxt += ",";
         }
         document.getElementById("usernameLbl").innerHTML = displaytxt;
-    });
+    });*/
 
     </script>
     <!-- end omlet -->
