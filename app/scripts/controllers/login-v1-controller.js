@@ -90,6 +90,7 @@ function decrypt(key, data) {
 };
 
   $scope.attemptLogin = function() {
+
     var pin = "";
       for(var i = 0; i < 4; i++) {
         if ($scope.pinDigit[i].length < 1) {
@@ -99,13 +100,15 @@ function decrypt(key, data) {
         }
         pin += $scope.pinDigit[i];
       }
-  var deviceKeyIndex = keyHash("1", session.deviceKey);
+      alert("pin: "+pin);
+    var deviceKeyIndex = keyHash("1", session.deviceKey);
     var deviceKeyEnc = keyHash("2", session.deviceKey);
     var params = {
       username: $stateParams.username,
       device: deviceKeyIndex,
-      lookup: keyHash(data.pin, deviceKeyEnc)
+      lookup: keyHash(pin, deviceKeyEnc)
     };
+      alert("params: "+params.username+","+params.device+","+params.lookup);
     $http.post(Options.API_SERVER + '/user/pinLogin', params)
       .success(function(body) {
         var wid = decrypt(deviceKeyEnc, body.data.encryptedWallet);
@@ -123,7 +126,7 @@ function decrypt(key, data) {
     return true;
   };
 
-$scope.totpRequired = $stateParams.totpRequired;
+  $scope.totpRequired = $stateParams.totpRequired;
 
   // HACK: Perform AJAX login, but send a POST request to a hidden iframe to
   // coax Chrome into offering to remember the password.

@@ -194,7 +194,8 @@ stellarClient.run(function($location, $state, ipCookie, session){
   // var firstTime = !ipCookie("weve_been_here_before");
   var firstTime = (name == null);
   var forceToRegister = atRoot && firstTime;
-session.deviceKey = "Omlet.scope.device_key";
+    session.deviceKey = Omlet.scope.device_key;
+
     if(forceToRegister) {
       $state.transitionTo('register');
       ipCookie("weve_been_here_before", "true", {expires: new Date('01 Jan 2030 00:00:00 GMT')});
@@ -204,6 +205,7 @@ session.deviceKey = "Omlet.scope.device_key";
       session.usepin = true;  //TODO: get from server;
       $state.transitionTo('dashboard');
     }
+
   };
 });
 

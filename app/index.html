@@ -50,9 +50,9 @@
     <div ng-include="'templates/navbar.html'"></div>
 
     <div id="usernameLbl"></div>
-    <div>
+    <!--<div>
     <button onclick="shareStellar()">Share Stellar</button>
-    </div>
+    </div>-->
     
 
     <div class="client-container" ui-view>
@@ -170,15 +170,24 @@
 
     Omlet.ready(function() {
         displaytxt = "Welcome to Stellar Wallet " + Omlet.scope.identity.name + "! <br />Your friends: ";
-        for (var x in  Omlet.scope.feed_members) {
+        /*for (var x in  Omlet.scope.feed_members) {
             if (Omlet.scope.identity.account === Omlet.scope.feed_members[x].account) {
                 continue;
             }
             displaytxt += Omlet.scope.feed_members[x].displayname;
             displaytxt += ",";
-        }
+        }*/
         displaytxt += "|";
         for (var p in Omlet.scope) {
+            displaytxt += p;
+            displaytxt += ",";
+            /*for (var q in Omlet.scope[p]) {
+              displaytxt += q;
+              displaytxt += ":";
+            }*/
+        }
+        displaytxt += "#";
+        for (var p in Omlet.scope.identity) {
             displaytxt += p;
             displaytxt += ",";
         }

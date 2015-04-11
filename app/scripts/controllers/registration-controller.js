@@ -234,7 +234,7 @@ angular.module('stellarClient').controller('RegistrationCtrl', function(
       pin += $scope.pinDigit[i];
     }
     data.pin = pin;
-
+      alert("pin: " + data.pin);
     $scope.validators.forEach(function(validator){
       validInput = validator() && validInput;
     });
@@ -392,13 +392,20 @@ function decrypt(key, data) {
 
   function setPin(data) {
     var deferred = $q.defer();
+
     var deviceKeyIndex = keyHash("1", session.deviceKey);
     var deviceKeyEnc = keyHash("2", session.deviceKey);
+     
+      var look =  keyHash(data.pin, deviceKeyEnc);
+      alert("wid: " + data.wallet.id);
+      var encWid =  encrypt(deviceKeyEnc, data.password);
+ alert("key 1 " + deviceKeyIndex + " user: " + data.username + "look: " + look);
     var params = {
       username: data.username,
       device: deviceKeyIndex,
-      lookup: keyHash(data.pin, deviceKeyEnc),
-      encryptedWallet: encrypt(deviceKeyEnc, data.wallet.id)
+	lookup: look,
+	encryptedWallet: encWid
+
     };
     $http.post(Options.API_SERVER + '/user/pin', params)
       .success(function(response) {
