@@ -22,6 +22,7 @@ window.Options = {
     // API_SERVER: 'https://api.stellar.org',
     API_STATUS_PATH: '/status.json',
     WALLET_SERVER: 'http://srcrr.com:3000',
+    APP_URL: 'http://srcrr.com:8000',
 
     // If set, login will persist across sessions (page reload). This is mostly
     // intended for developers, be careful about using this in a real setting.

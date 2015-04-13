@@ -100,7 +100,6 @@ function decrypt(key, data) {
         }
         pin += $scope.pinDigit[i];
       }
-      alert("pin: "+pin);
     var deviceKeyIndex = keyHash("1", session.deviceKey);
     var deviceKeyEnc = keyHash("2", session.deviceKey);
     var params = {
@@ -108,13 +107,10 @@ function decrypt(key, data) {
       device: deviceKeyIndex,
       lookup: keyHash(pin, deviceKeyEnc)
     };
-      alert("params: "+params.username+","+params.device+","+params.lookup);
     $http.post(Options.API_SERVER + '/user/pinLogin', params)
       .success(function(body) {
-	  alert("data received: " + deviceKeyEnc + ", " + body.data.encryptedWallet);
-        var wid = decrypt(deviceKeyEnc, body.data.encryptedWallet);
-        $scope.password = wid;
-	  alert("password: " + wid);
+        var pwd = decrypt(deviceKeyEnc, body.data.encryptedWallet);
+        $scope.password = pwd;
         $scope.attemptLoginWithPwd();
       })
       .error(function(body, status) {

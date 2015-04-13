@@ -179,7 +179,7 @@ sc.controller('SendController', function($rootScope, $scope, $analytics, Stellar
             displayText: "I have sent you " + $scope.send.amount.to_human_full() +" stellars",
             json: null,
             webCallback: null,
-            callback: window.location.href,
+            callback: APP_URL,
         });
         Omlet.exit(rdl);
   };
