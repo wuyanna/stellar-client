@@ -21,7 +21,7 @@ sc.controller('ReceivePaneCtrl', function($scope, session) {
             displayText: "Hi, can you send me stellar?",
             json: null,
             webCallback: null,
-            callback: APP_URL,
+            callback: Options.APP_URL,
         });
     Omlet.exit(rdl);
   };

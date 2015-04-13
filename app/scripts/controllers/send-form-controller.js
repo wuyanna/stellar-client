@@ -234,7 +234,7 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
             displayText: "Register with Stellar Now",
             json: null,
             webCallback: null,
-            callback: APP_URL,
+            callback: Options.APP_URL,
         });
         Omlet.exit(rdl);
     };
