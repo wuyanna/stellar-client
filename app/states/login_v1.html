@@ -27,7 +27,7 @@
         </div>
       </div> -->
       <!-- Pin form -->
-            <div class="form-group">
+            <div class="form-group" ng-show="usepin == true">
                 <label for="username" class="col-sm-3">4-DIGIT PIN</label>
                 <div class="col-sm-6">
                     <input type="number" maxlength=1 id="pinDigit1" class="form-control form-control-pin" ng-model="pinDigit[0]" ng-change="recordDigitAndMove('pinDigit1','pinDigit2')" />
@@ -36,6 +36,19 @@
                     <input type="number" maxlength=1 id="pinDigit4" class="form-control form-control-pin" ng-model="pinDigit[3]" ng-change="recordDigitAndMove('pinDigit4', null)" />
                 </div>
             </div>
+
+      <div class="form-group" ng-show="usepin == false">
+        <label for="password" class="col-sm-3">PASSWORD</label>
+        <div class="col-sm-6 input-icon-wrapper">
+          <input id="password" type="password" class="form-control" ng-model="password" ng-disabled="asyncLogin.isLoading()" ng-change="loginError = null" autocomplete="off" />
+          <i class="icon icon-key"></i>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-6">
+          <span class="recovery-info"><a href ng-click="usepin = !usepin ">{{usepin ? Use password : Use pin}}</a></span>
+        </div>
+      </div>
 
       <div class="form-group">
         <div class="errors col-sm-12"></div>
