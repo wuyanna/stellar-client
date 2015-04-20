@@ -156,13 +156,13 @@ stellarClient.config(function($httpProvider, $stateProvider, $urlRouterProvider,
 stellarClient.run(function($location, $state, ipCookie, session){
   Omlet.ready(function() {
 
-  var user = Omlet.scope.identity.account;
+  
 
   if (Omlet.scope.identity == undefined) {
     initializeStellar(null);
     return;
   }
-
+  var user = Omlet.scope.identity.account;
   var config = {
                 
                     type: 'federation',
