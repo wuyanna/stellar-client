@@ -4,6 +4,7 @@ angular.module('stellarClient').controller('LoginV1Ctrl', function($rootScope, $
   setTimeout(function() {
     angular.element('#password')[0].focus();
   }, 200);
+  $scope.usepin = true;
   $scope.pinDigit = new Array; // Array
 
   $scope.recordDigitAndMove = function(currentId, nextFieldID) {
