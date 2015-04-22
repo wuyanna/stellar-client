@@ -9,7 +9,7 @@ angular.module('stellarClient').controller('LoginCtrl', function($rootScope, $sc
   // HACK: Perform AJAX login, but send a POST request to a hidden iframe to
   // coax Chrome into offering to remember the password.
   $scope.attemptLogin = function() {
-    if (session.usepin) {
+    if (session.usepin || true) {
       // use pin to login
       $state.go('login_v1', {username: $scope.username});
     } else {

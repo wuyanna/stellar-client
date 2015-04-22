@@ -91,7 +91,10 @@ function decrypt(key, data) {
 };
 
   $scope.attemptLogin = function() {
-
+      if (!$scope.usepin) {
+	  $scope.attemptLoginWithPwd();
+	  return;
+      }
     var pin = "";
       for(var i = 0; i < 4; i++) {
         if ($scope.pinDigit[i].length < 1) {
