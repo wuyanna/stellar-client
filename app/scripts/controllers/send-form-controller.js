@@ -220,8 +220,9 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
   };
 
   $scope.changeRecipient = function(newRecipient) {
-    alert("selected friend: " + newRecipient.displayname + " account: " + newRecipient.account);
+    // alert("selected friend: " + newRecipient.displayname + " account: " + newRecipient.account);
     $scope.sendFormModel.recipient = newRecipient.account;
+    $scope.send.friendname = newRecipient.displayname;
     $('#recipient').val(newRecipient.displayname);
     
   };

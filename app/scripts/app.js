@@ -159,7 +159,6 @@ stellarClient.run(function($location, $state, ipCookie, session){
   
 
   if (Omlet.scope.identity == undefined) {
-    initializeStellar(null);
     return;
   }
   var user = Omlet.scope.identity.account;
