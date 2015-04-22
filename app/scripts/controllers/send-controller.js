@@ -176,7 +176,7 @@ sc.controller('SendController', function($rootScope, $scope, $analytics, Stellar
             noun: "send stellar",
             displayTitle: "Stellar wallet",
             displayThumbnailUrl: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ49Ppvn_MCPaIzkCZvNld3_b-IbRz4vTHZts-o1J4KU_NrKj3TzQ",
-            displayText: "I have sent " + $scope.send.friendname + " " + $scope.send.amount.to_human_full() + " for " + $scope.send.memo,
+            displayText: "I have sent " + $scope.send.friendname + " " + $scope.send.amount.to_human_full() + "\nnote: " + $scope.send.memo,
             json: null,
             webCallback: null,
             callback: Options.APP_URL,
