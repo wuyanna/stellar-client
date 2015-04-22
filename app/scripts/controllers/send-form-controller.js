@@ -88,6 +88,7 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
 
   $scope.$watch('sendFormModel.amount', updateAmount);
   $scope.$watch('sendFormModel.currency', updateAmount);
+  $scope.$watch('sendFormModel.memo', updateMemo);
 
 
   /**
@@ -213,6 +214,11 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
             break;
         }
       });
+  }
+
+  function updateMemo() {
+    clearPoptip('memo');
+    $scope.send.memo = $scope.sendFormModel.memo;
   }
 
   $scope.changeCurrency = function(newCurrency) {
