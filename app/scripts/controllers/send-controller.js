@@ -44,8 +44,18 @@ sc.controller('SendController', function($rootScope, $scope, $analytics, Stellar
   };
 
   Omlet.ready(function() {
-    $scope.send.friends = Omlet.scope.feed_members;
+    $scope.send.friends = [];
+    for (var x in  Omlet.scope.feed_members) {
+      if (Omlet.scope.identity.account === Omlet.scope.feed_members[x].account) {
+        continue;
+      }
+      $scope.send.friends.push(Omlet.scope.feed_members[x]);
+    }
+    
     $scope.reset();
+    if ($scope.send.friends.length == 1) {
+      $scope.send.recipient = $scope.send.friends[0];
+    }
   });
 
   // global notifications
@@ -176,7 +186,7 @@ sc.controller('SendController', function($rootScope, $scope, $analytics, Stellar
             noun: "send stellar",
             displayTitle: "Stellar wallet",
             displayThumbnailUrl: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ49Ppvn_MCPaIzkCZvNld3_b-IbRz4vTHZts-o1J4KU_NrKj3TzQ",
-            displayText: "I have sent " + $scope.send.friendname + " " + $scope.send.amount.to_human_full() + " for " + $scope.send.memo,
+            displayText: "I have sent " + $scope.send.recipient.displayname + " " + $scope.send.amount.to_human_full() + " for " + $scope.send.memo,
             json: null,
             webCallback: null,
             callback: Options.APP_URL,
