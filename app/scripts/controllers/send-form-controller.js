@@ -74,11 +74,6 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
     resetPaths();
   });
 
-  if ($scope.send.recipient != undefined) {
-    $scope.sendFormModel.recipient = newRecipient.account;
-    $('#recipient').val(newRecipient.displayname);
-  }
-
 
   // Clear the paths and path status.
   function resetPaths() {
@@ -95,7 +90,12 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
   $scope.$watch('sendFormModel.currency', updateAmount);
   $scope.$watch('sendFormModel.memo', updateMemo);
 
-
+  $scope.$on('$viewContentLoaded', function() {
+    if ($scope.send.recipient != undefined) {
+      $scope.sendFormModel.recipient = $scope.send.recipient;
+      $('#recipient').val($scope.send.recipient.displayname);
+    }
+  });
   /**
    * Update the payment destination.
    */
