@@ -44,8 +44,18 @@ sc.controller('SendController', function($rootScope, $scope, $analytics, Stellar
   };
 
   Omlet.ready(function() {
-    $scope.send.friends = Omlet.scope.feed_members;
+    $scope.send.friends = [];
+    for (var x in  Omlet.scope.feed_members) {
+      if (Omlet.scope.identity.account === Omlet.scope.feed_members[x].account) {
+        continue;
+      }
+      $scope.send.friends.push(Omlet.scope.feed_members[x]);
+    }
+    
     $scope.reset();
+    if ($scope.send.friends.length == 1) {
+      $scope.send.recipient = $scope.send.friends[0];
+    }
   });
 
   // global notifications

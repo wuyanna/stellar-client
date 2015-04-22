@@ -74,6 +74,11 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
     resetPaths();
   });
 
+  if ($scope.send.recipient != undefined) {
+    $scope.sendFormModel.recipient = newRecipient.account;
+    $('#recipient').val(newRecipient.displayname);
+  }
+
 
   // Clear the paths and path status.
   function resetPaths() {
@@ -228,7 +233,7 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
   $scope.changeRecipient = function(newRecipient) {
     // alert("selected friend: " + newRecipient.displayname + " account: " + newRecipient.account);
     $scope.sendFormModel.recipient = newRecipient.account;
-    $scope.send.friendname = newRecipient.displayname;
+    $scope.send.recipient = newRecipient;
     $('#recipient').val(newRecipient.displayname);
     
   };

@@ -263,7 +263,7 @@ stellarClient.run(function($rootScope, $state, $timeout, ipCookie, session, Flas
       } else if(toState.authenticate) {
         // Redirect authenticated routes to login if we are unable to login from local.
         event.preventDefault();
-        $state.transitionTo('login');
+        $state.transitionTo('login_v1', {username: session.username});
       }
 
       return;
