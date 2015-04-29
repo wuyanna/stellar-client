@@ -89,10 +89,10 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
   $scope.$watch('sendFormModel.amount', updateAmount);
   $scope.$watch('sendFormModel.currency', updateAmount);
   $scope.$watch('sendFormModel.memo', updateMemo);
-
-  $scope.init = function () {
+    $scope.$watch('send.recipient', prefill);
+    function prefill() {
     if ($scope.send.recipient != undefined) {
-      $scope.sendFormModel.recipient = $scope.send.recipient;
+      $scope.sendFormModel.recipient = $scope.send.recipient.account;
       $('#recipient').val($scope.send.recipient.displayname);
     }
   };
@@ -101,6 +101,7 @@ sc.controller('SendFormController', function($rootScope, $scope, Payment, deboun
    */
 
   function updateRecipient(newValue) {
+      alert("update recipient: " + newValue);
     if(newValue === $scope.send.destination.address || newValue === $scope.send.destination.federatedName) {
       return;
     }

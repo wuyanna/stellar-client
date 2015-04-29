@@ -34,12 +34,12 @@ sc.controller('SendController', function($rootScope, $scope, $analytics, Stellar
       $scope.send.state = "disconnected";
       return;
     }
-
+/*
     if (!$rootScope.account.Balance) {
       $scope.send.state = "unfunded";
       return;
     }
-
+*/
     $scope.send.state = state;
   };
 
@@ -51,7 +51,6 @@ sc.controller('SendController', function($rootScope, $scope, $analytics, Stellar
       }
       $scope.send.friends.push(Omlet.scope.feed_members[x]);
     }
-    
     $scope.reset();
     if ($scope.send.friends.length == 1) {
       $scope.send.recipient = $scope.send.friends[0];

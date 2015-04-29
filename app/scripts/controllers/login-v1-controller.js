@@ -121,7 +121,7 @@ function decrypt(key, data) {
         switch(status) {
 
           default:
-            $scope.loginError = 'Invalid Pin.';
+            $scope.loginError = 'Error: ' + body;
         }
       });
 
