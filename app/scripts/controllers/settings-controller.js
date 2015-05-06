@@ -158,6 +158,7 @@ function decrypt(key, data) {
         username: session.username,
         device: deviceKeyIndex,
         lookup: keyHash(pin, deviceKeyEnc),
+        updateToken: session.get('wallet').keychainData.updateToken,
         encryptedWallet: encPwd
       };
       alert("post change pin: " + pin);
