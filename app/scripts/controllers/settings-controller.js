@@ -150,7 +150,7 @@ function decrypt(key, data) {
         }
         pin += $scope.pinDigit[i];
       }
-      alert("change pin: " + pin);
+      
       var deviceKeyIndex = keyHash("1", session.deviceKey);
       var deviceKeyEnc = keyHash("2", session.deviceKey);
       var encPwd =  encrypt(deviceKeyEnc, session.password);
@@ -160,6 +160,7 @@ function decrypt(key, data) {
         lookup: keyHash(pin, deviceKeyEnc),
         encryptedWallet: encPwd
       };
+      alert("post change pin: " + pin);
     $http.post(Options.API_SERVER + '/user/pinChange', params)
       .success(function(body) {
         alert("Pin change succeed");
