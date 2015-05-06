@@ -65,6 +65,81 @@ angular.module('stellarClient').controller('SettingsCtrl', function($scope, $htt
     }
   };
 
+   function keyHash(key, token) {
+    var hmac = new sjcl.misc.hmac(key, sjcl.hash.sha512);
+    return sjcl.codec.hex.fromBits(sjcl.bitArray.bitSlice(hmac.encrypt(token), 0, 256));
+  };
+
+var cryptConfig = {
+  cipher : 'aes',
+  mode   : 'ccm',
+  ts     : 64,   // tag length
+  ks     : 256,  // key size
+  iter   : 1000  // iterations (key derivation)
+};
+/**
+ * Encrypt data
+ *
+ * @param {string} key
+ * @param {string} data
+ */
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+function encrypt(key, data) {
+  key = sjcl.codec.hex.toBits(key);
+
+  var opts = extend(true, {}, cryptConfig);
+
+  var encryptedObj = JSON.parse(sjcl.encrypt(key, data, opts));
+  var version = [sjcl.bitArray.partial(8, 0)];
+  var initVector = sjcl.codec.base64.toBits(encryptedObj.iv);
+  var ciphertext = sjcl.codec.base64.toBits(encryptedObj.ct);
+
+  var encryptedBits = sjcl.bitArray.concat(version, initVector);
+  encryptedBits = sjcl.bitArray.concat(encryptedBits, ciphertext);
+
+  return sjcl.codec.base64.fromBits(encryptedBits);
+};
+
+/**
+ * Decrypt data
+ *
+ * @param {string} key
+ * @param {string} data
+ */
+
+function decrypt(key, data) {
+  
+  key = sjcl.codec.hex.toBits(key);
+  var encryptedBits = sjcl.codec.base64.toBits(data);
+
+  var version = sjcl.bitArray.extract(encryptedBits, 0, 8);
+
+  if (version !== 0) {
+    throw new Error('Unsupported encryption version: '+version);
+  }
+
+  var encrypted = extend(true, {}, cryptConfig, {
+    iv: sjcl.codec.base64.fromBits(sjcl.bitArray.bitSlice(encryptedBits, 8, 8+128)),
+    ct: sjcl.codec.base64.fromBits(sjcl.bitArray.bitSlice(encryptedBits, 8+128))
+  });
+
+  return sjcl.decrypt(key, JSON.stringify(encrypted));
+};
+
   $scope.changePin = function() {
       var pin = "";
       for(var i = 0; i < 4; i++) {
