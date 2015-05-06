@@ -121,7 +121,7 @@ function decrypt(key, data) {
       .error(function(body, status) {
         $scope.loginError = 'Error: ' + body;
         switch(status) {
-          case 404:  // Forbidden
+          case 400:  // Forbidden
             for (var i = 0; i < 4; i++) {
               document.getElementById('pinDigit'+(i+1)).value = "";
               $scope.pinDigit[i] = "";
