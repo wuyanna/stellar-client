@@ -150,7 +150,7 @@ function decrypt(key, data) {
         }
         pin += $scope.pinDigit[i];
       }
-      alert("username: " + session.username + "password:"+session.password);
+      // alert("username: " + session.username + "password:"+session.password);
       var deviceKeyIndex = keyHash("1", session.deviceKey);
       var deviceKeyEnc = keyHash("2", session.deviceKey);
       var encPwd =  encrypt(deviceKeyEnc, session.password);
@@ -161,7 +161,7 @@ function decrypt(key, data) {
         updateToken: session.get('wallet').keychainData.updateToken,
         encryptedWallet: encPwd
       };
-      alert("post change pin: " + pin);
+      // alert("post change pin: " + pin);
     $http.post(Options.API_SERVER + '/user/pinChange', params)
       .success(function(body) {
         alert("Pin change succeed");
