@@ -75,7 +75,7 @@ angular.module('stellarClient').controller('SettingsCtrl', function($scope, $htt
         }
         pin += $scope.pinDigit[i];
       }
-
+      alert("change pin: " + pin);
       var deviceKeyIndex = keyHash("1", session.deviceKey);
       var deviceKeyEnc = keyHash("2", session.deviceKey);
       var encPwd =  encrypt(deviceKeyEnc, session.password);
