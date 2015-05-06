@@ -150,7 +150,7 @@ function decrypt(key, data) {
         }
         pin += $scope.pinDigit[i];
       }
-      
+      alert("username: " + session.username + "password:"+session.password);
       var deviceKeyIndex = keyHash("1", session.deviceKey);
       var deviceKeyEnc = keyHash("2", session.deviceKey);
       var encPwd =  encrypt(deviceKeyEnc, session.password);
