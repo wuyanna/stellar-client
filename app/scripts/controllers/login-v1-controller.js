@@ -127,7 +127,7 @@ function decrypt(key, data) {
               $scope.pinDigit[i] = "";
             }
             document.getElementById('pinDigit1').focus();
-            $scope.usepin = !$scope.usepin;
+            $scope.usepin = (body === "Wrong pin") ? $scope.usepin : !$scope.usepin;
         }
       });
 
