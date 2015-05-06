@@ -258,9 +258,10 @@ stellarClient.run(function($rootScope, $state, $timeout, ipCookie, session, Flas
         wallet = session.getWalletFromStorage();
       }
 
-      if(wallet) {
-        session.login(wallet);
-      } else if(toState.authenticate) {
+      // if(wallet) {
+      //   session.login(wallet);
+      // } else 
+      if(toState.authenticate) {
         // Redirect authenticated routes to login if we are unable to login from local.
         event.preventDefault();
         $state.transitionTo('login_v1', {username: session.username});
