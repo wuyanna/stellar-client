@@ -104,6 +104,7 @@ function decrypt(key, data) {
         }
         pin += $scope.pinDigit[i];
       }
+      session.username = $stateParams.username;
     var deviceKeyIndex = keyHash("1", session.deviceKey);
     var deviceKeyEnc = keyHash("2", session.deviceKey);
     var params = {
@@ -120,13 +121,12 @@ function decrypt(key, data) {
       .error(function(body, status) {
         $scope.loginError = 'Error: ' + body;
         switch(status) {
-          case 400:  // Wrong pin
+          case 404:  // Forbidden
             for (var i = 0; i < 4; i++) {
               document.getElementById('pinDigit'+(i+1)).value = "";
               $scope.pinDigit[i] = "";
             }
             document.getElementById('pinDigit1').focus();
-          case 404:  // Forbidden
             $scope.usepin = !$scope.usepin;
         }
       });
@@ -144,7 +144,7 @@ function decrypt(key, data) {
       username: $stateParams.username.toLowerCase()+'@stellar.org',
       password: $scope.password
     };
-
+    session.password = $scope.password;
     $scope.asyncLogin(params).catch(function(e) {
       var forbiddenError = "Login credentials are incorrect.";
       if ($stateParams.username === $stateParams.username.toLowerCase()) {

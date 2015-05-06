@@ -55,6 +55,46 @@ angular.module('stellarClient').controller('SettingsCtrl', function($scope, $htt
       });
   }
 
+  $scope.pinDigit = new Array; // Array
+
+  $scope.recordDigitAndMove = function(currentId, nextFieldID) {
+    var i = parseInt(currentId.substr(currentId.length - 1)) - 1;
+    // $scope.pinDigit[i] = field.value;
+    if (document.getElementById(currentId).value.length == 1 && nextFieldID != null) {
+        document.getElementById(nextFieldID).focus();
+    }
+  };
+
+  $scope.changePin = function() {
+      var pin = "";
+      for(var i = 0; i < 4; i++) {
+        if ($scope.pinDigit[i].length < 1) {
+          validInput = false;
+          $scope.errors.secretErrors.push('Invalid pin.');
+          return;
+        }
+        pin += $scope.pinDigit[i];
+      }
+
+      var deviceKeyIndex = keyHash("1", session.deviceKey);
+    var deviceKeyEnc = keyHash("2", session.deviceKey);
+    var encPwd =  encrypt(deviceKeyEnc, session.password);
+    var params = {
+      username: session.username,
+      device: deviceKeyIndex,
+      lookup: keyHash(pin, deviceKeyEnc),
+      encryptedWallet: encPwd
+    };
+    $http.post(Options.API_SERVER + '/user/pinChange', params)
+      .success(function(body) {
+        alert("Pin change succeed");
+      })
+      .error(function(body, status) {
+        $scope.loginError = 'Error: ' + body;
+      });
+
+  };
+
   // We need to reload settings in SettingsRecoveryCtrl
   $scope.getSettings = getSettings;
 
