@@ -77,14 +77,14 @@ angular.module('stellarClient').controller('SettingsCtrl', function($scope, $htt
       }
 
       var deviceKeyIndex = keyHash("1", session.deviceKey);
-    var deviceKeyEnc = keyHash("2", session.deviceKey);
-    var encPwd =  encrypt(deviceKeyEnc, session.password);
-    var params = {
-      username: session.username,
-      device: deviceKeyIndex,
-      lookup: keyHash(pin, deviceKeyEnc),
-      encryptedWallet: encPwd
-    };
+      var deviceKeyEnc = keyHash("2", session.deviceKey);
+      var encPwd =  encrypt(deviceKeyEnc, session.password);
+      var params = {
+        username: session.username,
+        device: deviceKeyIndex,
+        lookup: keyHash(pin, deviceKeyEnc),
+        encryptedWallet: encPwd
+      };
     $http.post(Options.API_SERVER + '/user/pinChange', params)
       .success(function(body) {
         alert("Pin change succeed");
