@@ -118,10 +118,16 @@ function decrypt(key, data) {
         $scope.attemptLoginWithPwd();
       })
       .error(function(body, status) {
+        $scope.loginError = 'Error: ' + body;
         switch(status) {
-
-          default:
-            $scope.loginError = 'Error: ' + body;
+          case 400:  // Wrong pin
+            for (var i = 0; i < 4; i++) {
+              document.getElementById('pinDigit'+(i+1)).value = "";
+              $scope.pinDigit[i] = "";
+            }
+            document.getElementById('pinDigit1').focus();
+          case 404:  // Forbidden
+            $scope.usepin = !$scope.usepin;
         }
       });
 
